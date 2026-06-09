@@ -7,6 +7,8 @@ Built with **Next.js 16** (full-stack) and **PostgreSQL + Prisma**. Three person
 - **42** page routes · **28** Prisma models · **13** server-action modules · **44** React components
 - Fully type-safe end-to-end · production-build verified
 
+**Created & developed by [Vivek Joshi](https://github.com/vive4545).**
+
 ---
 
 ## Table of contents
@@ -298,3 +300,12 @@ uploads, real email/SMS sending, phone-OTP verification, granular RBAC UI.
 ---
 
 Built as a client pitch/demo. See `docs/IMPLEMENTATION_PLAN.md` and `docs/TECH_STACK.md` for deeper detail.
+
+---
+
+## Author
+
+**Vivek Joshi** — design, architecture & development.
+GitHub: [@vive4545](https://github.com/vive4545)
+
+© 2026 Vivek Joshi. All rights reserved.
