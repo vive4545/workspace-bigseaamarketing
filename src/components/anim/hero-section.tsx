@@ -74,14 +74,25 @@ export function HeroSection({
     <section ref={scope} className="relative overflow-hidden bg-ocean-mesh">
       {/* Blueprint grid + 3D backdrop */}
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-60" />
-      <div className="pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(70%_70%_at_60%_40%,black,transparent)]">
+      <div className="pointer-events-none absolute inset-0 opacity-45 [mask-image:radial-gradient(70%_70%_at_60%_40%,black,transparent)]">
         <Hero3D />
       </div>
+      {/* Legibility scrim — keeps copy readable over the 3D blob */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(58% 50% at 50% 38%, color-mix(in oklch, var(--background) 80%, transparent), transparent 72%)",
+        }}
+      />
 
       <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8 lg:pb-28 lg:pt-24">
         <div className="mx-auto max-w-3xl text-center">
           <div className="hero-badge inline-block">
-            <Badge variant="accent" className="mb-5">
+            <Badge
+              variant="accent"
+              className="mb-5 bg-background/85 px-3 py-1 text-accent shadow-xs ring-accent/25 backdrop-blur"
+            >
               <Sparkles className="size-3.5" /> Trusted by global trade teams
             </Badge>
           </div>
@@ -95,7 +106,7 @@ export function HeroSection({
               ))}
             </span>
             <span className="mt-1 inline-block overflow-hidden pb-1">
-              <span className="hero-word inline-block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="hero-word inline-block bg-gradient-to-r from-primary to-[oklch(0.58_0.18_38)] bg-clip-text text-transparent">
                 verified suppliers
               </span>
             </span>{" "}
@@ -104,7 +115,7 @@ export function HeroSection({
             </span>
           </h1>
 
-          <p className="hero-sub mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+          <p className="hero-sub mx-auto mt-6 max-w-2xl text-pretty text-lg text-foreground/80">
             {siteConfig.name} connects serious buyers with vetted manufacturers.
             Browse products with live currency conversion, post an RFQ, and get
             competitive quotations — fast.
@@ -125,7 +136,7 @@ export function HeroSection({
             </Button>
           </form>
 
-          <div className="hero-trust mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <div className="hero-trust mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/75">
             <span className="inline-flex items-center gap-1.5">
               <BadgeCheck className="size-4 text-success" /> Verified badges
             </span>
