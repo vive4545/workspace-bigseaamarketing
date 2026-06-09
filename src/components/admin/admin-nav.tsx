@@ -38,8 +38,10 @@ export function AdminNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-              active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              "flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+              active
+                ? "bg-primary/10 text-primary shadow-xs ring-1 ring-inset ring-primary/15"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground",
             )}
           >
             <item.icon className="size-4" />

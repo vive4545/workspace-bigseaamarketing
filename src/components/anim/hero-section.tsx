@@ -72,7 +72,8 @@ export function HeroSection({
 
   return (
     <section ref={scope} className="relative overflow-hidden bg-ocean-mesh">
-      {/* 3D backdrop */}
+      {/* Blueprint grid + 3D backdrop */}
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-60" />
       <div className="pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(70%_70%_at_60%_40%,black,transparent)]">
         <Hero3D />
       </div>
@@ -111,7 +112,7 @@ export function HeroSection({
 
           <form
             action="/products"
-            className="hero-form mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-xl border bg-card/90 p-2 shadow-lg backdrop-blur"
+            className="hero-form mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-2xl border border-border/70 bg-card/95 p-2 shadow-xl backdrop-blur"
           >
             <Search className="ml-2 size-5 shrink-0 text-muted-foreground" />
             <Input
@@ -139,10 +140,17 @@ export function HeroSection({
 
         <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map((s) => (
-            <Card key={s.label} className="hero-stat border-border/60 bg-card/70 backdrop-blur">
+            <Card
+              key={s.label}
+              className="hero-stat card-hover border-border/60 bg-card/70 backdrop-blur"
+            >
               <CardContent className="flex flex-col items-center gap-1 p-6 text-center">
-                <s.icon className="mb-1 size-6 text-primary" />
-                <div className="text-2xl font-bold">{s.value}</div>
+                <span className="mb-2 grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                  <s.icon className="size-5" />
+                </span>
+                <div className="text-2xl font-bold tabular-nums tracking-tight">
+                  {s.value}
+                </div>
                 <div className="text-xs text-muted-foreground">{s.label}</div>
               </CardContent>
             </Card>

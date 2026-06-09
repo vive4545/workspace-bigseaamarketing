@@ -53,7 +53,12 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="mb-10 flex items-end justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Browse by category</h2>
+            <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+              Categories
+            </span>
+            <h2 className="mt-1.5 text-3xl font-bold tracking-tight sm:text-4xl">
+              Browse by category
+            </h2>
             <p className="mt-2 text-muted-foreground">
               Explore verified suppliers across leading industries.
             </p>
@@ -68,7 +73,7 @@ export default async function HomePage() {
         <Reveal stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data.parentCategories.map((cat) => (
             <Link key={cat.id} href={`/categories/${cat.slug}`} className="group">
-              <Card className="h-full transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+              <Card className="card-hover h-full">
                 <CardContent className="flex items-center justify-between gap-4 p-6">
                   <div>
                     <h3 className="font-semibold group-hover:text-primary">
@@ -89,12 +94,18 @@ export default async function HomePage() {
       </section>
 
       {/* ─────────────────────── How it works ─────────────────────── */}
-      <section className="border-y bg-secondary/30">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="relative border-y border-border/60 bg-secondary/30">
+        <div className="bg-grid pointer-events-none absolute inset-0 opacity-50" />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight">How {siteConfig.name} works</h2>
+            <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+              How it works
+            </span>
+            <h2 className="mt-1.5 text-3xl font-bold tracking-tight sm:text-4xl">
+              From discovery to deal in three steps
+            </h2>
             <p className="mt-2 text-muted-foreground">
-              From discovery to deal in three simple steps.
+              {siteConfig.name} makes global sourcing simple, fast, and verified.
             </p>
           </Reveal>
           <Reveal stagger className="mt-12 grid gap-8 md:grid-cols-3">
@@ -115,15 +126,20 @@ export default async function HomePage() {
                 body: "Review quotes side by side, unlock supplier contacts, and close the deal with confidence.",
               },
             ].map((step, i) => (
-              <div key={step.title} className="relative">
-                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                  <step.icon className="size-6" />
-                </div>
-                <div className="absolute right-0 top-0 text-5xl font-bold text-primary/10">
+              <div
+                key={step.title}
+                className="card-hover relative overflow-hidden rounded-2xl border border-border/70 bg-card p-7"
+              >
+                <div className="pointer-events-none absolute -right-1 -top-4 text-7xl font-bold tabular-nums text-primary/[0.07]">
                   0{i + 1}
                 </div>
-                <h3 className="text-lg font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{step.body}</p>
+                <div className="relative mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-brand">
+                  <step.icon className="size-6" />
+                </div>
+                <h3 className="relative text-lg font-semibold">{step.title}</h3>
+                <p className="relative mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {step.body}
+                </p>
               </div>
             ))}
           </Reveal>
@@ -134,7 +150,12 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="mb-10 flex items-end justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Featured verified suppliers</h2>
+            <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+              Featured
+            </span>
+            <h2 className="mt-1.5 text-3xl font-bold tracking-tight sm:text-4xl">
+              Verified suppliers
+            </h2>
             <p className="mt-2 text-muted-foreground">
               Hand-vetted manufacturers ready to quote.
             </p>

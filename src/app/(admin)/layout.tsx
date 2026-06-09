@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ExternalLink, ShieldAlert } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +19,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-border/60 glass">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Logo href="/admin" />
@@ -32,7 +31,6 @@ export default async function AdminLayout({
             <Link href="/" className="hidden items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground sm:inline-flex">
               View site <ExternalLink className="size-3.5" />
             </Link>
-            <ThemeToggle />
             <UserMenu name={user.name ?? null} email={user.email ?? null} role={user.role} />
           </div>
         </div>
