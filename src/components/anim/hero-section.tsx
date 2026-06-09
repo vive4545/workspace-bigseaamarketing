@@ -20,6 +20,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { siteConfig } from "@/lib/site";
 
+import { HeroAurora } from "./hero-aurora";
+
 const Hero3D = dynamic(() => import("./hero-3d"), {
   ssr: false,
   loading: () => null,
@@ -77,7 +79,9 @@ export function HeroSection({
       <div className="pointer-events-none absolute inset-0 opacity-45 [mask-image:radial-gradient(70%_70%_at_60%_40%,black,transparent)]">
         <Hero3D />
       </div>
-      {/* Legibility scrim — keeps copy readable over the 3D blob */}
+      {/* Interactive cursor-following aurora glow */}
+      <HeroAurora />
+      {/* Legibility scrim — keeps copy readable over the 3D blob + aurora */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
