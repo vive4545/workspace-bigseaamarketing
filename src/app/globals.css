@@ -6,51 +6,72 @@
    Token-driven (oklch). Light theme. shadcn/ui compatible.
    ============================================================ */
 
+/* ============================================================
+   PERMANENT DARK THEME — deep ocean ink.
+   Tokens live directly on :root (not a `.dark` class) because Tailwind v4
+   strips standalone `.dark {}` rulesets from the compiled sheet; :root vars
+   are always emitted, so this guarantees the dark theme applies app-wide.
+   The previous LIGHT palette is preserved at the bottom of this block,
+   commented out, for a one-step revert if ever needed.
+   ============================================================ */
 :root {
+  color-scheme: dark;
   --radius: 0.75rem;
 
-  /* Cool, faintly-tinted canvas so pure-white cards/surfaces lift off it.
-     The ~2.5% gap between background and card is what creates depth. */
-  --background: oklch(0.971 0.008 232);
-  --foreground: oklch(0.2 0.032 238);
+  --background: oklch(0.165 0.022 245);
+  --foreground: oklch(0.95 0.008 230);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.032 238);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.032 238);
+  /* Elevated surfaces sit a step lighter than the canvas — depth on dark
+     comes from lighter surfaces + borders more than from shadows. */
+  --card: oklch(0.214 0.025 244);
+  --card-foreground: oklch(0.95 0.008 230);
+  --popover: oklch(0.214 0.025 244);
+  --popover-foreground: oklch(0.95 0.008 230);
 
-  /* Brand: deep ocean teal */
-  --primary: oklch(0.52 0.115 220);
-  --primary-foreground: oklch(0.99 0.01 220);
+  /* Brighter teal so the brand reads against the dark canvas. */
+  --primary: oklch(0.7 0.125 205);
+  --primary-foreground: oklch(0.16 0.03 240);
 
-  /* Section bands — deep enough to read as a distinct surface. */
-  --secondary: oklch(0.938 0.014 230);
-  --secondary-foreground: oklch(0.28 0.04 235);
+  --secondary: oklch(0.265 0.026 244);
+  --secondary-foreground: oklch(0.93 0.01 230);
 
-  --muted: oklch(0.945 0.012 230);
-  --muted-foreground: oklch(0.48 0.025 232);
+  --muted: oklch(0.252 0.024 244);
+  --muted-foreground: oklch(0.7 0.022 232);
 
-  /* Accent: warm coral for CTAs / highlights */
-  --accent: oklch(0.7 0.16 45);
-  --accent-foreground: oklch(0.99 0.01 60);
+  --accent: oklch(0.72 0.16 45);
+  --accent-foreground: oklch(0.18 0.03 40);
 
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.99 0.01 60);
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.97 0.01 60);
 
-  --success: oklch(0.62 0.14 155);
-  --success-foreground: oklch(0.99 0.01 150);
-  --warning: oklch(0.78 0.15 80);
-  --warning-foreground: oklch(0.27 0.05 80);
+  --success: oklch(0.68 0.14 158);
+  --success-foreground: oklch(0.15 0.03 160);
+  --warning: oklch(0.8 0.15 80);
+  --warning-foreground: oklch(0.22 0.05 80);
 
-  --border: oklch(0.882 0.013 232);
-  --input: oklch(0.9 0.012 232);
+  --border: oklch(0.32 0.022 244);
+  --input: oklch(0.345 0.024 244);
+  --ring: oklch(0.7 0.125 205);
+
+  --chart-1: oklch(0.7 0.125 205);
+  --chart-2: oklch(0.72 0.16 45);
+  --chart-3: oklch(0.68 0.14 158);
+  --chart-4: oklch(0.68 0.13 280);
+  --chart-5: oklch(0.8 0.15 80);
+
+  /* --- LIGHT palette (revert: swap these into the tokens above) ---
+  color-scheme: light;
+  --background: oklch(0.971 0.008 232);  --foreground: oklch(0.2 0.032 238);
+  --card: oklch(1 0 0);                  --card-foreground: oklch(0.2 0.032 238);
+  --popover: oklch(1 0 0);               --popover-foreground: oklch(0.2 0.032 238);
+  --primary: oklch(0.52 0.115 220);      --primary-foreground: oklch(0.99 0.01 220);
+  --secondary: oklch(0.938 0.014 230);   --secondary-foreground: oklch(0.28 0.04 235);
+  --muted: oklch(0.945 0.012 230);       --muted-foreground: oklch(0.48 0.025 232);
+  --accent: oklch(0.7 0.16 45);          --accent-foreground: oklch(0.99 0.01 60);
+  --destructive: oklch(0.58 0.22 27);    --success: oklch(0.62 0.14 155);
+  --border: oklch(0.882 0.013 232);      --input: oklch(0.9 0.012 232);
   --ring: oklch(0.52 0.115 220);
-
-  --chart-1: oklch(0.54 0.11 215);
-  --chart-2: oklch(0.7 0.16 45);
-  --chart-3: oklch(0.62 0.14 155);
-  --chart-4: oklch(0.66 0.13 280);
-  --chart-5: oklch(0.78 0.15 80);
+  ----------------------------------------------------------------- */
 }
 
 @theme inline {
@@ -95,21 +116,21 @@
   /* Refined, brand-tinted elevation. Shadows carry the foreground ocean hue
      (not pure black) for a softer, more premium feel. Overrides Tailwind's
      default shadow-* scale → cascades to every elevated surface app-wide. */
-  --shadow-2xs: 0 1px 2px 0 oklch(0.2 0.032 238 / 0.05);
-  --shadow-xs: 0 1px 2px 0 oklch(0.2 0.032 238 / 0.07);
+  --shadow-2xs: 0 1px 2px 0 oklch(0 0 0 / 0.3);
+  --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.35);
   --shadow-sm:
-    0 1px 2px -1px oklch(0.2 0.032 238 / 0.08),
-    0 2px 6px -1px oklch(0.2 0.032 238 / 0.08);
+    0 1px 2px -1px oklch(0 0 0 / 0.4),
+    0 2px 6px -1px oklch(0 0 0 / 0.4);
   --shadow-md:
-    0 2px 4px -2px oklch(0.2 0.032 238 / 0.08),
-    0 8px 20px -4px oklch(0.2 0.032 238 / 0.11);
+    0 2px 4px -2px oklch(0 0 0 / 0.4),
+    0 8px 20px -4px oklch(0 0 0 / 0.5);
   --shadow-lg:
-    0 4px 8px -3px oklch(0.2 0.032 238 / 0.1),
-    0 16px 32px -6px oklch(0.2 0.032 238 / 0.14);
+    0 4px 8px -3px oklch(0 0 0 / 0.45),
+    0 16px 32px -6px oklch(0 0 0 / 0.55);
   --shadow-xl:
-    0 8px 16px -6px oklch(0.2 0.032 238 / 0.12),
-    0 28px 56px -12px oklch(0.2 0.032 238 / 0.18);
-  --shadow-2xl: 0 32px 64px -16px oklch(0.2 0.032 238 / 0.24);
+    0 8px 16px -6px oklch(0 0 0 / 0.5),
+    0 28px 56px -12px oklch(0 0 0 / 0.6);
+  --shadow-2xl: 0 32px 64px -16px oklch(0 0 0 / 0.7);
 
   /* Premium easing curves for micro-interactions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -325,5 +346,48 @@ html.lenis body {
   }
   .animate-rise {
     animation: rise-in 0.7s var(--ease-out-expo) both;
+  }
+
+  /* ---- Fancy page loader ---- */
+  /* Conic brand gradient masked into a ring; spin it for the loader. */
+  .loader-ring {
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      color-mix(in oklch, var(--primary) 35%, transparent) 35%,
+      var(--primary) 75%,
+      var(--accent) 100%
+    );
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 3px)
+    );
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 3px)
+    );
+  }
+  /* Indeterminate sliding bar */
+  @keyframes loader-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+  .animate-loader-slide {
+    animation: loader-slide 1.1s var(--ease-out-expo) infinite;
+  }
+  /* Shimmer sweep for skeletons / loading text */
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  .animate-shimmer {
+    animation: shimmer 1.6s ease-in-out infinite;
   }
 }
