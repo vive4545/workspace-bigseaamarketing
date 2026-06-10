@@ -9,23 +9,26 @@
 :root {
   --radius: 0.75rem;
 
-  --background: oklch(0.99 0.004 220);
-  --foreground: oklch(0.21 0.03 235);
+  /* Cool, faintly-tinted canvas so pure-white cards/surfaces lift off it.
+     The ~2.5% gap between background and card is what creates depth. */
+  --background: oklch(0.971 0.008 232);
+  --foreground: oklch(0.2 0.032 238);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.03 235);
+  --card-foreground: oklch(0.2 0.032 238);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.03 235);
+  --popover-foreground: oklch(0.2 0.032 238);
 
   /* Brand: deep ocean teal */
-  --primary: oklch(0.54 0.11 215);
+  --primary: oklch(0.52 0.115 220);
   --primary-foreground: oklch(0.99 0.01 220);
 
-  --secondary: oklch(0.96 0.01 220);
+  /* Section bands — deep enough to read as a distinct surface. */
+  --secondary: oklch(0.938 0.014 230);
   --secondary-foreground: oklch(0.28 0.04 235);
 
-  --muted: oklch(0.96 0.008 220);
-  --muted-foreground: oklch(0.52 0.02 230);
+  --muted: oklch(0.945 0.012 230);
+  --muted-foreground: oklch(0.48 0.025 232);
 
   /* Accent: warm coral for CTAs / highlights */
   --accent: oklch(0.7 0.16 45);
@@ -39,9 +42,9 @@
   --warning: oklch(0.78 0.15 80);
   --warning-foreground: oklch(0.27 0.05 80);
 
-  --border: oklch(0.91 0.01 225);
-  --input: oklch(0.91 0.01 225);
-  --ring: oklch(0.54 0.11 215);
+  --border: oklch(0.882 0.013 232);
+  --input: oklch(0.9 0.012 232);
+  --ring: oklch(0.52 0.115 220);
 
   --chart-1: oklch(0.54 0.11 215);
   --chart-2: oklch(0.7 0.16 45);
@@ -92,21 +95,21 @@
   /* Refined, brand-tinted elevation. Shadows carry the foreground ocean hue
      (not pure black) for a softer, more premium feel. Overrides Tailwind's
      default shadow-* scale → cascades to every elevated surface app-wide. */
-  --shadow-2xs: 0 1px 2px 0 oklch(0.21 0.03 235 / 0.04);
-  --shadow-xs: 0 1px 2px 0 oklch(0.21 0.03 235 / 0.05);
+  --shadow-2xs: 0 1px 2px 0 oklch(0.2 0.032 238 / 0.05);
+  --shadow-xs: 0 1px 2px 0 oklch(0.2 0.032 238 / 0.07);
   --shadow-sm:
-    0 1px 2px -1px oklch(0.21 0.03 235 / 0.06),
-    0 1px 3px 0 oklch(0.21 0.03 235 / 0.05);
+    0 1px 2px -1px oklch(0.2 0.032 238 / 0.08),
+    0 2px 6px -1px oklch(0.2 0.032 238 / 0.08);
   --shadow-md:
-    0 2px 4px -2px oklch(0.21 0.03 235 / 0.06),
-    0 6px 16px -4px oklch(0.21 0.03 235 / 0.08);
+    0 2px 4px -2px oklch(0.2 0.032 238 / 0.08),
+    0 8px 20px -4px oklch(0.2 0.032 238 / 0.11);
   --shadow-lg:
-    0 4px 8px -3px oklch(0.21 0.03 235 / 0.08),
-    0 12px 28px -6px oklch(0.21 0.03 235 / 0.1);
+    0 4px 8px -3px oklch(0.2 0.032 238 / 0.1),
+    0 16px 32px -6px oklch(0.2 0.032 238 / 0.14);
   --shadow-xl:
-    0 8px 16px -6px oklch(0.21 0.03 235 / 0.1),
-    0 24px 48px -12px oklch(0.21 0.03 235 / 0.14);
-  --shadow-2xl: 0 32px 64px -16px oklch(0.21 0.03 235 / 0.2);
+    0 8px 16px -6px oklch(0.2 0.032 238 / 0.12),
+    0 28px 56px -12px oklch(0.2 0.032 238 / 0.18);
+  --shadow-2xl: 0 32px 64px -16px oklch(0.2 0.032 238 / 0.24);
 
   /* Premium easing curves for micro-interactions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -120,6 +123,21 @@
   }
   body {
     background-color: var(--background);
+    /* Faint ocean wash + cool depth so the canvas reads as a designed surface
+       rather than blank white. Fixed so it stays put behind smooth-scroll. */
+    background-image:
+      radial-gradient(
+        ellipse 80% 50% at 50% -10%,
+        color-mix(in oklch, var(--primary) 9%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 60% 45% at 100% 0%,
+        color-mix(in oklch, var(--accent) 7%, transparent),
+        transparent 55%
+      );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--foreground);
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -247,6 +265,36 @@ html.lenis body {
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
     border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+  }
+  /* Card with an animated brand accent bar along the top edge (reveals on
+     hover). Pair with `card-hover`. The premium "tell" for elevated tiles. */
+  .card-accent {
+    position: relative;
+  }
+  .card-accent::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    background: linear-gradient(
+      90deg,
+      var(--primary),
+      color-mix(in oklch, var(--accent) 85%, var(--primary))
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .card-accent:hover::before,
+  .group:hover .card-accent::before {
+    transform: scaleX(1);
+  }
+  /* Soft brand ring used on avatars/thumbnails for a crisper edge */
+  .ring-brand {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--primary) 14%, transparent),
+      inset 0 0 0 1px oklch(1 0 0 / 0.6);
   }
   /* Hairline divider that fades at the edges */
   .divider-soft {

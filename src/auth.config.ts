@@ -31,7 +31,11 @@ export const authConfig = {
       const isAdminArea = path.startsWith("/admin");
 
       if (isProtected && !isLoggedIn) return false;
-      if (isAdminArea && auth?.user?.role !== "ADMIN") return false;
+      // Authenticated but wrong role: send them to their own dashboard rather
+      // than the login page (which is confusing for an already-signed-in user).
+      if (isAdminArea && auth?.user?.role !== "ADMIN") {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
       return true;
     },
     jwt({ token, user, trigger, session }) {

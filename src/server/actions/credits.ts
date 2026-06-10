@@ -6,6 +6,18 @@ import { requireUser } from "@/server/auth-helpers";
 import { getStripe } from "@/lib/stripe";
 import { getPack, UNLOCK_COST } from "@/lib/credit-packs";
 
+class InsufficientCreditsError extends Error {}
+
+/** Prisma unique-constraint violation (P2002), regardless of client version shape. */
+function isUniqueViolation(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code?: string }).code === "P2002"
+  );
+}
+
 type UnlockResult =
   | { ok: true; already?: boolean }
   | { ok: false; error: string; needCredits?: boolean };
@@ -23,28 +35,37 @@ export async function unlockSupplier(supplierId: string): Promise<UnlockResult> 
   });
   if (existing) return { ok: true, already: true };
 
-  const account = await prisma.creditAccount.findUnique({ where: { userId: user.id } });
-  if (!account || account.balance < UNLOCK_COST) {
-    return { ok: false, error: "Not enough credits.", needCredits: true };
-  }
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Atomic guarded debit: the `balance >= cost` predicate lives in the UPDATE
+      // itself, so two concurrent unlocks can't both pass a stale read and drive
+      // the balance negative (TOCTOU over-spend). 0 rows updated ⇒ insufficient.
+      const debit = await tx.creditAccount.updateMany({
+        where: { userId: user.id, balance: { gte: UNLOCK_COST } },
+        data: { balance: { decrement: UNLOCK_COST } },
+      });
+      if (debit.count === 0) throw new InsufficientCreditsError();
 
-  await prisma.$transaction([
-    prisma.creditAccount.update({
-      where: { userId: user.id },
-      data: { balance: { decrement: UNLOCK_COST } },
-    }),
-    prisma.supplierUnlock.create({
-      data: { buyerId: user.id, supplierId, creditCost: UNLOCK_COST },
-    }),
-    prisma.transaction.create({
-      data: {
-        userId: user.id,
-        type: "SPEND",
-        amount: -UNLOCK_COST,
-        description: `Unlocked ${supplier.companyName}`,
-      },
-    }),
-  ]);
+      await tx.supplierUnlock.create({
+        data: { buyerId: user.id, supplierId, creditCost: UNLOCK_COST },
+      });
+      await tx.transaction.create({
+        data: {
+          userId: user.id,
+          type: "SPEND",
+          amount: -UNLOCK_COST,
+          description: `Unlocked ${supplier.companyName}`,
+        },
+      });
+    });
+  } catch (err) {
+    if (err instanceof InsufficientCreditsError) {
+      return { ok: false, error: "Not enough credits.", needCredits: true };
+    }
+    // Lost a race to unlock this same supplier (unique [buyerId, supplierId]).
+    if (isUniqueViolation(err)) return { ok: true, already: true };
+    throw err;
+  }
 
   revalidatePath(`/suppliers/${supplier.slug}`);
   return { ok: true };

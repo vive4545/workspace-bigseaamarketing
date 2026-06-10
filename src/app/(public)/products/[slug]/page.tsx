@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, Package, ShoppingCart, Tag } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { siteConfig } from "@/lib/site";
 import {
   currencyForCountry,
   detectCountry,

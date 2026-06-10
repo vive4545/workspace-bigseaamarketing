@@ -17,12 +17,16 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link href={`/products/${product.slug}`} className="group">
       <Card className="card-hover flex h-full flex-col overflow-hidden">
-        <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-gradient-to-br from-secondary to-secondary/40">
-          <Package className="size-10 text-muted-foreground/40 transition-transform duration-500 ease-out group-hover:scale-110" />
+        <div className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-gradient-to-br from-secondary via-secondary/60 to-secondary/30">
+          <div className="bg-dots pointer-events-none absolute inset-0 opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/[0.04] to-transparent" />
+          <span className="relative grid size-16 place-items-center rounded-2xl bg-card/70 shadow-sm ring-1 ring-inset ring-border/60 backdrop-blur-sm transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-3">
+            <Package className="size-7 text-primary/55" />
+          </span>
           {product.category && (
             <Badge
               variant="secondary"
-              className="absolute left-3 top-3 shadow-xs backdrop-blur"
+              className="absolute left-3 top-3 border border-border/60 shadow-xs backdrop-blur"
             >
               {product.category.name}
             </Badge>

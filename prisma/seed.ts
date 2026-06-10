@@ -90,7 +90,7 @@ async function main() {
   // --- Demo users (buyer / supplier / admin) -------------------------------
   const password = await bcrypt.hash("Password123!", 10);
 
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "admin@bigseaa.com",
       name: "Site Admin",

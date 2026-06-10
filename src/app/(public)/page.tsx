@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, FileText, Search } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  FileText,
+  Globe2,
+  Search,
+  ShieldCheck,
+  Star,
+  Truck,
+} from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,6 +58,28 @@ export default async function HomePage() {
         countryCount={data.countryCount}
       />
 
+      {/* ─────────────────────── Trust strip ─────────────────────── */}
+      <section className="border-y border-border/60 bg-card/50">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+          <Reveal className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:justify-between">
+            {[
+              { icon: ShieldCheck, label: "Verified suppliers only" },
+              { icon: Star, label: "Hand-vetted manufacturers" },
+              { icon: Globe2, label: `${data.countryCount}+ countries` },
+              { icon: Truck, label: "Secure RFQ workflow" },
+            ].map((item) => (
+              <span
+                key={item.label}
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground"
+              >
+                <item.icon className="size-4 text-primary" />
+                {item.label}
+              </span>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
       {/* ─────────────────────── Categories ─────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <Reveal className="mb-10 flex items-end justify-between">
@@ -73,7 +104,7 @@ export default async function HomePage() {
         <Reveal stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data.parentCategories.map((cat) => (
             <Link key={cat.id} href={`/categories/${cat.slug}`} className="group">
-              <Card className="card-hover h-full">
+              <Card className="card-hover card-accent h-full">
                 <CardContent className="flex items-center justify-between gap-4 p-6">
                   <div>
                     <h3 className="font-semibold group-hover:text-primary">
@@ -128,7 +159,7 @@ export default async function HomePage() {
             ].map((step, i) => (
               <div
                 key={step.title}
-                className="card-hover relative overflow-hidden rounded-2xl border border-border/70 bg-card p-7"
+                className="card-hover card-accent relative overflow-hidden rounded-2xl border border-border/70 bg-card p-7 shadow-sm"
               >
                 <div className="pointer-events-none absolute -right-1 -top-4 text-7xl font-bold tabular-nums text-primary/[0.07]">
                   0{i + 1}

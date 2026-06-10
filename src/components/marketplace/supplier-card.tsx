@@ -16,10 +16,10 @@ export interface SupplierCardData {
 export function SupplierCard({ supplier }: { supplier: SupplierCardData }) {
   return (
     <Link href={`/suppliers/${supplier.slug}`} className="group">
-      <Card className="card-hover flex h-full flex-col">
+      <Card className="card-hover card-accent flex h-full flex-col">
         <CardContent className="flex flex-1 flex-col gap-3 p-5">
           <div className="flex items-center justify-between">
-            <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-primary/15 to-accent/15 text-sm font-bold text-primary ring-1 ring-inset ring-primary/10">
+            <span className="ring-brand grid size-12 place-items-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-sm font-bold text-primary shadow-sm transition-transform duration-300 group-hover:scale-105">
               {supplier.companyName.slice(0, 2).toUpperCase()}
             </span>
             {supplier.verifiedBadge && (

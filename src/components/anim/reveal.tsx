@@ -1,6 +1,12 @@
 "use client";
 
-import { createElement, useRef, type ElementType, type ReactNode } from "react";
+import {
+  useRef,
+  type ComponentType,
+  type ElementType,
+  type ReactNode,
+  type Ref,
+} from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -33,7 +39,19 @@ export function Reveal({
   once?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
-  const Tag = (as ?? "div") as ElementType;
+  // Callback ref (not the ref object) so the dynamic createElement below doesn't
+  // trip react-hooks/refs by appearing to read `.current` during render. useGSAP
+  // still scopes off the ref object, whose `.current` is only read in the effect.
+  const setRef = (node: HTMLElement | null) => {
+    ref.current = node;
+  };
+  // Cast to a single-prop ComponentType (not ElementType) so JSX below stays
+  // type-safe without the dynamic-element union exploding (TS2590).
+  const Tag = (as ?? "div") as ComponentType<{
+    ref?: Ref<HTMLElement>;
+    className?: string;
+    children?: ReactNode;
+  }>;
 
   useGSAP(
     () => {
@@ -57,5 +75,9 @@ export function Reveal({
     { scope: ref },
   );
 
-  return createElement(Tag, { ref, className }, children);
+  return (
+    <Tag ref={setRef} className={className}>
+      {children}
+    </Tag>
+  );
 }
