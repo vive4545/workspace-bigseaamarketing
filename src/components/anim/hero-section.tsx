@@ -1,7 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Boxes,
   FileText,
@@ -12,8 +11,6 @@ import {
   TrendingUp,
   BadgeCheck,
 } from "lucide-react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,13 +18,6 @@ import { Input } from "@/components/ui/input";
 import { siteConfig } from "@/lib/site";
 
 import { HeroAurora } from "./hero-aurora";
-
-const Hero3D = dynamic(() => import("./hero-3d"), {
-  ssr: false,
-  loading: () => null,
-});
-
-gsap.registerPlugin(useGSAP);
 
 const HEADLINE = ["Source", "smarter", "from"];
 
@@ -42,7 +32,19 @@ export function HeroSection({
   rfqCount: number;
   countryCount: number;
 }) {
-  const scope = useRef<HTMLElement>(null);
+  // Pause the cursor aurora's animation loop whenever the hero scrolls out of
+  // view, so it doesn't keep running while the rest of the page is scrolled.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin: "120px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const stats = [
     { label: "Verified suppliers", value: `${supplierCount}+`, icon: ShieldCheck },
@@ -51,36 +53,12 @@ export function HeroSection({
     { label: "Countries", value: `${countryCount}+`, icon: Globe2 },
   ];
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from(".hero-badge", { y: 20, opacity: 0, duration: 0.6 })
-        .from(
-          ".hero-word",
-          { yPercent: 120, opacity: 0, duration: 0.9, stagger: 0.09 },
-          "-=0.3",
-        )
-        .from(".hero-sub", { y: 20, opacity: 0, duration: 0.7 }, "-=0.45")
-        .from(".hero-form", { y: 22, opacity: 0, duration: 0.7 }, "-=0.4")
-        .from(".hero-trust", { y: 16, opacity: 0, duration: 0.6 }, "-=0.45")
-        .from(
-          ".hero-stat",
-          { y: 26, opacity: 0, duration: 0.6, stagger: 0.08 },
-          "-=0.25",
-        );
-    },
-    { scope },
-  );
-
   return (
-    <section ref={scope} className="relative overflow-hidden bg-ocean-mesh">
-      {/* Blueprint grid + 3D backdrop */}
+    <section ref={sectionRef} className="relative overflow-hidden bg-ocean-mesh">
+      {/* Blueprint grid backdrop */}
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-60" />
-      <div className="pointer-events-none absolute inset-0 opacity-45 [mask-image:radial-gradient(70%_70%_at_60%_40%,black,transparent)]">
-        <Hero3D />
-      </div>
       {/* Interactive cursor-following aurora glow */}
-      <HeroAurora />
+      <HeroAurora active={inView} />
       {/* Legibility scrim — keeps copy readable over the 3D blob + aurora */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -92,7 +70,7 @@ export function HeroSection({
 
       <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8 lg:pb-28 lg:pt-24">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="hero-badge inline-block">
+          <div className="hero-rise inline-block">
             <Badge
               variant="accent"
               className="mb-5 bg-background/85 px-3 py-1 text-accent shadow-xs ring-accent/25 backdrop-blur"
@@ -103,23 +81,39 @@ export function HeroSection({
 
           <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             <span className="flex flex-wrap justify-center gap-x-3">
-              {HEADLINE.map((w) => (
+              {HEADLINE.map((w, i) => (
                 <span key={w} className="inline-block overflow-hidden pb-1">
-                  <span className="hero-word inline-block">{w}</span>
+                  <span
+                    className="hero-word-anim inline-block"
+                    style={{ animationDelay: `${0.12 + i * 0.08}s` }}
+                  >
+                    {w}
+                  </span>
                 </span>
               ))}
             </span>
             <span className="mt-1 inline-block overflow-hidden pb-1">
-              <span className="hero-word inline-block bg-gradient-to-r from-primary to-[oklch(0.58_0.18_38)] bg-clip-text text-transparent">
+              <span
+                className="hero-word-anim inline-block bg-gradient-to-r from-primary to-[oklch(0.58_0.18_38)] bg-clip-text text-transparent"
+                style={{ animationDelay: "0.36s" }}
+              >
                 verified suppliers
               </span>
             </span>{" "}
             <span className="inline-block overflow-hidden pb-1">
-              <span className="hero-word inline-block">worldwide</span>
+              <span
+                className="hero-word-anim inline-block"
+                style={{ animationDelay: "0.44s" }}
+              >
+                worldwide
+              </span>
             </span>
           </h1>
 
-          <p className="hero-sub mx-auto mt-6 max-w-2xl text-pretty text-lg text-foreground/80">
+          <p
+            className="hero-rise mx-auto mt-6 max-w-2xl text-pretty text-lg text-foreground/80"
+            style={{ animationDelay: "0.5s" }}
+          >
             {siteConfig.name} connects serious buyers with vetted manufacturers.
             Browse products with live currency conversion, post an RFQ, and get
             competitive quotations — fast.
@@ -127,7 +121,8 @@ export function HeroSection({
 
           <form
             action="/products"
-            className="hero-form mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-2xl border border-border/70 bg-card/95 p-2 shadow-xl backdrop-blur"
+            className="hero-rise mx-auto mt-8 flex max-w-xl items-center gap-2 rounded-2xl border border-border/70 bg-card/95 p-2 shadow-xl backdrop-blur"
+            style={{ animationDelay: "0.6s" }}
           >
             <Search className="ml-2 size-5 shrink-0 text-muted-foreground" />
             <Input
@@ -140,7 +135,10 @@ export function HeroSection({
             </Button>
           </form>
 
-          <div className="hero-trust mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/75">
+          <div
+            className="hero-rise mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/75"
+            style={{ animationDelay: "0.7s" }}
+          >
             <span className="inline-flex items-center gap-1.5">
               <BadgeCheck className="size-4 text-success" /> Verified badges
             </span>
@@ -154,10 +152,11 @@ export function HeroSection({
         </div>
 
         <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 lg:grid-cols-4">
-          {stats.map((s) => (
+          {stats.map((s, i) => (
             <Card
               key={s.label}
-              className="hero-stat card-hover border-border/60 bg-card/70 backdrop-blur"
+              className="hero-rise card-hover border-border/60 bg-card/70 backdrop-blur"
+              style={{ animationDelay: `${0.8 + i * 0.08}s` }}
             >
               <CardContent className="flex flex-col items-center gap-1 p-6 text-center">
                 <span className="mb-2 grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">

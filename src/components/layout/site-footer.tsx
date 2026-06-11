@@ -44,9 +44,9 @@ export function SiteFooter() {
           </div>
           {footerCols.map((col) => (
             <div key={col.title}>
-              <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">
                 {col.title}
-              </h4>
+              </h2>
               <ul className="space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.href}>

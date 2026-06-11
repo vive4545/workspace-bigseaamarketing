@@ -37,10 +37,11 @@ const FILL: Record<BlobSpec["hue"], string> = {
   mix: "radial-gradient(circle, color-mix(in oklch, var(--primary) 50%, var(--accent)), transparent 62%)",
 };
 
-export function HeroAurora() {
+export function HeroAurora({ active = true }: { active?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!active) return; // hero off-screen — don't run the animation loop
     const root = ref.current;
     if (!root) return;
     const section = root.parentElement ?? root;
@@ -53,18 +54,24 @@ export function HeroAurora() {
 
     let targetX = 0.5;
     let targetY = 0.42;
-    let active = false;
+    let pointerActive = false;
     let raf = 0;
     let t = 0;
 
+    // Cache the container size so the per-frame loop never reads layout (which
+    // would force a reflow). Refresh only on resize.
+    let rect = section.getBoundingClientRect();
+    const onResize = () => {
+      rect = section.getBoundingClientRect();
+    };
+
     const onMove = (e: PointerEvent) => {
-      const r = section.getBoundingClientRect();
-      targetX = (e.clientX - r.left) / r.width;
-      targetY = (e.clientY - r.top) / r.height;
-      active = true;
+      targetX = (e.clientX - rect.left) / rect.width;
+      targetY = (e.clientY - rect.top) / rect.height;
+      pointerActive = true;
     };
     const onLeave = () => {
-      active = false;
+      pointerActive = false;
     };
 
     const frame = () => {
@@ -72,29 +79,34 @@ export function HeroAurora() {
       // Ambient figure-eight drift used while the pointer is idle.
       const ambientX = 0.5 + Math.cos(t) * 0.2;
       const ambientY = 0.42 + Math.sin(t * 0.9) * 0.16;
-      const gx = active ? targetX : ambientX;
-      const gy = active ? targetY : ambientY;
+      const gx = pointerActive ? targetX : ambientX;
+      const gy = pointerActive ? targetY : ambientY;
 
       state.forEach((s, i) => {
         s.x += (gx - s.x) * BLOBS[i].speed;
         s.y += (gy - s.y) * BLOBS[i].speed;
         const b = blobs[i];
-        b.style.left = `${s.x * 100}%`;
-        b.style.top = `${s.y * 100}%`;
+        // Animate via transform (composited, no reflow) as a px delta from the
+        // element's static left/top anchor. The -50% keeps it centred.
+        const dx = (s.x - BLOBS[i].x) * rect.width;
+        const dy = (s.y - BLOBS[i].y) * rect.height;
+        b.style.transform = `translate(-50%, -50%) translate3d(${dx}px, ${dy}px, 0)`;
       });
       raf = requestAnimationFrame(frame);
     };
 
     section.addEventListener("pointermove", onMove);
     section.addEventListener("pointerleave", onLeave);
+    window.addEventListener("resize", onResize);
     raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
       section.removeEventListener("pointermove", onMove);
       section.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [active]);
 
   return (
     <div
@@ -106,10 +118,11 @@ export function HeroAurora() {
         <div
           key={i}
           data-blob
-          className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl will-change-[left,top] ${b.className}`}
+          className={`absolute rounded-full blur-3xl will-change-transform ${b.className}`}
           style={{
             left: `${b.x * 100}%`,
             top: `${b.y * 100}%`,
+            transform: "translate(-50%, -50%)",
             background: FILL[b.hue],
           }}
         />

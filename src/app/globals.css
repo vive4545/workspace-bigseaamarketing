@@ -333,19 +333,77 @@ html.lenis body {
     backdrop-filter: saturate(180%) blur(12px);
     -webkit-backdrop-filter: saturate(180%) blur(12px);
   }
-  /* Subtle entrance for above-the-fold elements (no-JS friendly) */
-  @keyframes rise-in {
+  /* ---- Hero entrance (CSS-driven, no JS contention) ----
+     Drives the above-the-fold hero so the headline animates smoothly on load
+     even while the page is hydrating. Stagger via inline animation-delay. */
+  @keyframes hero-word-in {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(110%);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-  .animate-rise {
-    animation: rise-in 0.7s var(--ease-out-expo) both;
+  .hero-word-anim {
+    animation: hero-word-in 0.85s var(--ease-out-expo) both;
+    will-change: transform, opacity;
+  }
+  @keyframes hero-rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .hero-rise {
+    animation: hero-rise-in 0.7s var(--ease-out-expo) both;
+    will-change: transform, opacity;
+  }
+
+  /* ---- Floating background orbs (full-page, CSS-only) ----
+     Heavily blurred gradient blobs that drift on slow loops. Only `transform`
+     is animated, so each orb is rasterized once and moved on the compositor —
+     cheap to paint even while blurred. */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(72px);
+    will-change: transform;
+  }
+  @keyframes orb-float-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(6vw, -5vh, 0) scale(1.08);
+    }
+  }
+  @keyframes orb-float-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-5vw, 5vh, 0) scale(0.94);
+    }
+  }
+  @keyframes orb-float-c {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+      transform: translate3d(4vw, 6vh, 0) scale(1.1);
+    }
+    66% {
+      transform: translate3d(-4vw, -4vh, 0) scale(0.9);
+    }
   }
 
   /* ---- Fancy page loader ---- */

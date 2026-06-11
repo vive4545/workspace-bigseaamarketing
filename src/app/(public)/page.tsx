@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/lib/site";
 import { HeroSection } from "@/components/anim/hero-section";
+import { PageOrbs } from "@/components/anim/page-orbs";
 import { Reveal } from "@/components/anim/reveal";
 import { SupplierCard } from "@/components/marketplace/supplier-card";
 
@@ -51,6 +52,8 @@ export default async function HomePage() {
 
   return (
     <>
+      <PageOrbs />
+
       <HeroSection
         supplierCount={data.supplierCount}
         productCount={data.productCount}
